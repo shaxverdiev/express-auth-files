@@ -1,5 +1,9 @@
 const UserService = require('../service/user_service');
+const UserModel = require('../models/user_model');
 const { validationResult } = require('express-validator');
+const UserPayload = require('../payload/user-payload');
+const bcrypt = require('bcrypt');
+const TokenService = require('../service/token_service');
 
 class Controller {
   async signin(req, res, next) {
@@ -11,22 +15,6 @@ class Controller {
     }
   }
 
-
-
-
-  //  refresh token
-  async sendNewToken(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-
-
-
-
-
   async signup(req, res, next) {
     try {
       // валидация логина и пароля
@@ -34,88 +22,120 @@ class Controller {
       if (!errors.isEmpty()) {
         return res.json('validation error');
       }
+      //есть ли пользователь с таким логином в БД
+      const person = await UserModel.findOne({
+        where: { login: req.body.login }});
+      if (person) {
+        res.json('This login is taken');
+      } else {
 
-      // деструктурируем тело запроса
-      const { login, password } = req.body;
 
-      //функция которая возвращает токен и этот токен нужно передать в браузер
-      const userData = await UserService.reg(login, password);
+        //функция которая возвращает токен и этот токен нужно передать в браузер
+        const userData = await UserService.reg(req.body.login, req.body.password);
 
-      // функция которая передает токен в браузер
-      return res.json(userData);
+        // функция которая передает токен в браузер
+        return res.json(userData);
+      }
     } catch (e) {
       console.log(e);
     }
   }
 
+  ////////////////////////////////////////////////////////////////////
+  async testing(req, res) {
+    const user = await UserModel.findOne({
+      where: { login: req.body.login}, raw: true})
+
+      
+      if(user) {
+        res.json('work')
+      } else {
+        res.json('dont work')
+      }
 
 
 
-
-
-  async fileUpload(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
   }
 
-  async latency(req, res, next) {
-    try {
-      res.json(['i', 'o']);
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
-  async getFile(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
 
-  async getFileList(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async deleteFile(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async downloadFile(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async updateFile(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async getInfo(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
-
-  async logout(req, res, next) {
-    try {
-    } catch (e) {
-      console.log(e);
-    }
-  }
 }
 
+
+
 module.exports = new Controller();
+
+// //  refresh token
+// async sendNewToken(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async fileUpload(req, res, next) {
+//   try {
+//     const file = req.files.file
+//     const owner = await
+//   } catch (e) {
+//     console.log(e);
+//     return res.json('upload error')
+//   }
+// }
+
+// async latency(req, res, next) {
+//   try {
+//     res.json(['i', 'o']);
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async getFile(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async getFileList(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async deleteFile(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async downloadFile(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async updateFile(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async getInfo(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }
+
+// async logout(req, res, next) {
+//   try {
+//   } catch (e) {
+//     console.log(e);
+//   }
+// }

@@ -1,33 +1,25 @@
 // require('dotenv').config();
 
 const express = require('express');
-const sequelize = require('./db/db-connect')
+const fileupload = require('express-fileupload')
 const cookierParser = require('cookie-parser');
+// const sequelize = require('./db/db-connect')
 const router = require('./router/router');
 const cors = require('./middlewares/cors_mw')
-const UserModel = require('./models/user_model');
+// const UserModel = require('./models/user_model');
 
 const PORT = process.env.PORT || 9999;
 const app = express();
 
 
+ 
 
-
-// функция для проверки запросов в БД
-// async function testQueryInDB() {
-//   const r = 'err@mailru'
-//   const fff = await UserModel.findAll({where: {login: r}})
-// console.log(fff)
-// }
-// testQueryInDB()
-
-
-//mw
+//mwd
 app.use(express.json());
 app.use(cookierParser());
+app.use(fileupload({}))
 app.use(cors);
 app.use(router);
-
 
 
 
