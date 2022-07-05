@@ -10,7 +10,7 @@ router.post('/signup', body('login').isEmail(),
 body('password').isLength({min: 5, max: 20}),
 controller.signup);
 
-// router.post('/signin/new_token', controller.sendNewToken);
+router.post('/signin/new_token', controller.signin);
 // router.post('/file/upload', controller.fileUpload); // auth
 // router.get('/latency', controller.latency); //just add auth
 // router.get('/file/:id', controller.getFile); // auth
